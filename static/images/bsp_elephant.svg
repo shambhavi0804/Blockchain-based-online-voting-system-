@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <rect width="100" height="100" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"/>
+  <!-- Elephant silhouette (ECI BSP Symbol) -->
+  <path d="M 75,46 Q 78,35 68,30 Q 56,26 44,28 Q 30,30 24,40 Q 18,48 18,60 L 22,82 L 30,82 L 32,68 L 44,68 L 46,82 L 54,82 L 56,66 Q 62,66 66,66 L 68,82 L 76,82 L 76,58 Q 80,68 84,72 L 86,70 Q 82,62 78,50 Z" fill="#1e3a8a"/>
+  <!-- Tusk -->
+  <path d="M 70,54 Q 78,56 80,52 Q 74,50 68,50 Z" fill="#ffffff"/>
+  <!-- Eye -->
+  <circle cx="64" cy="38" r="2.5" fill="#ffffff"/>
+  <text x="50" y="96" font-family="Arial, sans-serif" font-size="9" font-weight="bold" text-anchor="middle" fill="#64748b">ELEPHANT (BSP)</text>
+</svg>

@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="kn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ಕರ್ನಾಟಕ ವಿಧಾನಸಭಾ ಚುನಾವಣೆ ಡೆಮೊ | Karnataka Legislative Assembly Election Demo</title>
+  <meta name="description" content="Kannada-first educational civic-tech prototype demonstrating electronic ballot selection, live IST voting countdown, zero-knowledge receipts, and transparent mock ledger.">
+  <link rel="stylesheet" href="/static/css/app.css">
+</head>
+<body>
+
+<div class="app-shell">
+
+  <!-- Top App Header with Karnataka Flag Accent Stripe -->
+  <header class="app-header" role="banner">
+    <div class="header-left">
+      <!-- Noticeably larger Gandaberunda state emblem -->
+      <div class="header-emblem-wrapper">
+        <img src="/static/images/karnataka_emblem.jpg" alt="ಕರ್ನಾಟಕ ರಾಜ್ಯ ಲಾಂಛನ / Karnataka State Gandaberunda Emblem" class="header-brand-logo">
+      </div>
+      <div class="header-title-group">
+        <h1 class="header-title">
+          <span data-i18n="app_title">ಕರ್ನಾಟಕ ವಿಧಾನಸಭಾ ಚುನಾವಣೆ ಡೆಮೊ</span>
+          <span class="demo-pill-badge" data-i18n="demo_badge">ಶೈಕ್ಷಣಿಕ ಡೆಮೊ</span>
+        </h1>
+        <span class="header-subtitle">
+          <span data-i18n="app_subtitle">ಸಿಮ್ಯುಲೇಟೆಡ್ ೧೬ನೇ ವಿಧಾನಸಭೆ • ಅಧಿಕೃತ ಇಸಿಐ ದತ್ತಾಂಶ</span>
+          <span>•</span>
+          <span style="color:var(--ka-red); font-weight:700;">ಡೆಮೊ ಯೋಜನೆ — ಅಧಿಕೃತ ಸೇವೆಯಲ್ಲ</span>
+        </span>
+      </div>
+    </div>
+
+    <!-- Center: Constituency Switcher -->
+    <div class="header-center">
+      <label for="constituency-select" class="constituency-picker-label" data-i18n="constituency_label">ವಿಧಾನಸಭಾ ಕ್ಷೇತ್ರ:</label>
+      <select id="constituency-select" class="constituency-dropdown" aria-label="Select Assembly Constituency">
+        <option value="160" selected>160 - ಸರ್ವಜ್ಞನಗರ / Sarvagnanagar</option>
+        <option value="219">219 - ವರುಣಾ / Varuna</option>
+        <option value="173">173 - ಜಯನಗರ / Jayanagar</option>
+      </select>
+    </div>
+
+    <!-- Right: Language Switcher, Chips & Precautions -->
+    <div class="header-right">
+      <!-- Kannada-First Language Switcher -->
+      <div class="language-switcher-group" role="group" aria-label="Language Switcher">
+        <button type="button" id="lang-btn-kn" class="lang-btn active" aria-pressed="true">ಕನ್ನಡ</button>
+        <button type="button" id="lang-btn-en" class="lang-btn" aria-pressed="false">English</button>
+      </div>
+
+      <div class="header-chip verified" title="Verified against ECI Form 20 and Form 7A gazetted publications">
+        <span class="header-chip-dot pulsing"></span>
+        <span data-i18n="data_verified_chip">ಇಸಿಐ ದಾಖಲೆಗಳು • ಅಕ್ಟೋಬರ್ ೨೦೨೪ ಪರಿಶೀಲನೆ</span>
+      </div>
+
+      <div class="header-chip ledger" id="header-ledger-chip" title="Local mock blockchain ledger state">
+        <span class="header-chip-dot"></span>
+        <span data-i18n="ledger_chip_synced">ಲೆಡ್ಜರ್: ಸಿಂಕ್ ಆಗಿದೆ</span>
+      </div>
+
+      <button type="button" class="btn-header-precautions" id="btn-open-precautions">
+        <span data-i18n="btn_precautions">⚠️ ಮತದಾನದ ಮುನ್ನೆಚ್ಚರಿಕೆಗಳು</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- App Workspace (Sidebar + Main Content Area) -->
+  <div class="app-workspace">
+    
+    <!-- Left Navigation Rail -->
+    <nav class="app-sidebar" aria-label="Main Navigation">
+      <ul class="sidebar-nav-list" role="tablist">
+        <li class="sidebar-nav-item">
+          <a href="#overview" class="sidebar-nav-link active" data-view="overview" role="tab" aria-selected="true" id="tab-overview">
+            <span class="sidebar-nav-link-left">
+              <span class="sidebar-nav-icon">📊</span>
+              <span data-i18n="tab_overview">ಮುನ್ನೋಟ</span>
+            </span>
+          </a>
+        </li>
+        <li class="sidebar-nav-item">
+          <a href="#ballot" class="sidebar-nav-link" data-view="ballot" role="tab" aria-selected="false" id="tab-ballot">
+            <span class="sidebar-nav-link-left">
+              <span class="sidebar-nav-icon">🗳️</span>
+              <span data-i18n="tab_ballot">ಅಧಿಕೃತ ಮತಪತ್ರ</span>
+            </span>
+            <span class="nav-badge-count" id="ballot-cand-count">9</span>
+          </a>
+        </li>
+        <li class="sidebar-nav-item">
+          <a href="#receipt" class="sidebar-nav-link" data-view="receipt" role="tab" aria-selected="false" id="tab-receipt">
+            <span class="sidebar-nav-link-left">
+              <span class="sidebar-nav-icon">🧾</span>
+              <span data-i18n="tab_receipt">ಮತದಾನ ರಶೀದಿ</span>
+            </span>
+          </a>
+        </li>
+        <li class="sidebar-nav-item">
+          <a href="#directory" class="sidebar-nav-link" data-view="directory" role="tab" aria-selected="false" id="tab-directory">
+            <span class="sidebar-nav-link-left">
+              <span class="sidebar-nav-icon">🏛️</span>
+              <span data-i18n="tab_directory">ರಾಜಕೀಯ ಪಕ್ಷಗಳ ಕೋಶ</span>
+            </span>
+            <span class="nav-badge-count">13</span>
+          </a>
+        </li>
+        <li class="sidebar-nav-item">
+          <a href="#ledger" class="sidebar-nav-link" data-view="ledger" role="tab" aria-selected="false" id="tab-ledger">
+            <span class="sidebar-nav-link-left">
+              <span class="sidebar-nav-icon">⛓️</span>
+              <span data-i18n="tab_ledger">ಲೆಡ್ಜರ್ ಅನ್ವೇಷಕ</span>
+            </span>
+            <span class="nav-badge-count" id="mempool-badge">0</span>
+          </a>
+        </li>
+        <li class="sidebar-nav-item">
+          <a href="#limitations" class="sidebar-nav-link" data-view="limitations" role="tab" aria-selected="false" id="tab-limitations">
+            <span class="sidebar-nav-link-left">
+              <span class="sidebar-nav-icon">⚖️</span>
+              <span data-i18n="tab_limitations">ಗೌಪ್ಯತೆ ಮತ್ತು ಮಿತಿಗಳು</span>
+            </span>
+          </a>
+        </li>
+      </ul>
+
+      <!-- Sidebar Footer Card -->
+      <div class="sidebar-footer-card">
+        <span class="sidebar-footer-title" data-i18n="sidebar_notice_title">ನಾಗರಿಕ ಗಡಿರೇಖೆಯ ಸೂಚನೆ</span>
+        <p class="sidebar-footer-text" data-i18n="sidebar_notice_text">
+          ಇದು ಶೈಕ್ಷಣಿಕ ಪ್ರಾತ್ಯಕ್ಷಿಕೆ ಮಾತ್ರ. ನೈಜ ಚುನಾವಣಾ ಗುರುತಿನ ಚೀಟಿ ಅಥವಾ ವೈಯಕ್ತಿಕ ವಿವರಗಳನ್ನು ಎಂದಿಗೂ ನಮೂದಿಸಬೇಡಿ.
+        </p>
+        <button type="button" class="btn-sidebar-reset" id="btn-reset-session" data-i18n="btn_reset_session">
+          ಡೆಮೊ ಅಧಿವೇಶನ ಮರುಹೊಂದಿಸಿ
+        </button>
+      </div>
+    </nav>
+
+    <!-- Main Dynamic Content Views -->
+    <main class="app-content-area" role="main">
+
+      <!-- Accessible Live Region for Timer State Transitions ONLY -->
+      <div id="timer-aria-announcement" class="sr-only" aria-live="polite" style="position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0,0,0,0);"></div>
+
+      <!-- ==============================================================
+           VIEW 1: OVERVIEW & ELECTION CONTEXT
+           ============================================================== -->
+      <section id="view-overview" class="view-container active-view" role="tabpanel" aria-labelledby="tab-overview">
+        
+        <!-- Large Gandaberunda Hero Unit with Karnataka Flag Accents -->
+        <div class="overview-hero-card">
+          <img src="/static/images/karnataka_emblem.jpg" alt="ಕರ್ನಾಟಕ ರಾಜ್ಯದ ಗಂಡಭೇರುಂಡ ಲಾಂಛನ / Karnataka Gandaberunda State Emblem" class="hero-emblem-large">
+          <div class="hero-content-group">
+            <h2 class="hero-kannada-title" data-i18n="hero_title">ಕರ್ನಾಟಕ ೧೬ನೇ ವಿಧಾನಸಭಾ ಸಾರ್ವತ್ರಿಕ ಚುನಾವಣೆ ಡೆಮೊ</h2>
+            <div class="hero-english-title" data-i18n="hero_sub">Primary-source electoral records sourced from Election Commission of India (ECI) & CEO Karnataka</div>
+            <div class="hero-tagline-badge" data-i18n="hero_demo_tag">ಡೆಮೊ ಯೋಜನೆ — ಯಾವುದೇ ಪಕ್ಷಕ್ಕೆ ಸೀಮಿತವಿಲ್ಲದ ತಟಸ್ಥ ವೇದಿಕೆ</div>
+          </div>
+        </div>
+
+        <!-- Prominent Voting Window & Live IST Countdown Panel -->
+        <div id="voting-window-panel" class="voting-window-panel state-open" aria-label="Voting Window and Live Timer">
+          <div class="window-meta-group">
+            <div class="window-title-row">
+              <span class="window-title" data-i18n="window_panel_title">ಮತದಾನದ ಅವಧಿ ಮತ್ತು ಸಮಯ</span>
+              <span id="window-state-badge" class="window-state-badge open">ತೆರೆದಿದೆ (OPEN)</span>
+            </div>
+            <div id="window-dates-display" class="window-date-text">
+              ಲೋಡ್ ಆಗುತ್ತಿದೆ...
+            </div>
+            <div id="window-state-msg" class="window-state-msg" style="font-size:12px; color:var(--text-secondary); font-weight:600; margin-top:2px;">
+              ಮತದಾನ ಪ್ರಕ್ರಿಯೆ ಪ್ರಸ್ತುತ ತೆರೆದಿದೆ. ಮತಪತ್ರದಲ್ಲಿ ನಿಮ್ಮ ಆಯ್ಕೆಯನ್ನು ದಾಖಲಿಸಬಹುದು.
+            </div>
+            <div class="window-sample-notice">
+              ಗಮನಿಸಿ: ಈ ದಿನಾಂಕಗಳು ಶೈಕ್ಷಣಿಕ ಡೆಮೊ ಪ್ರದರ್ಶನಕ್ಕಾಗಿ ಮಾತ್ರ. ನೈಜ ಚುನಾವಣಾ ದಿನಾಂಕಗಳಲ್ಲ.
+            </div>
+
+            <!-- Quick Developer Testing Controls -->
+            <div class="dev-state-switcher">
+              <span>ಪರೀಕ್ಷಾ ಸ್ಥಿತಿ ಬದಲಿಸಿ (Test Override):</span>
+              <button type="button" class="btn-state-pill" data-state="open">ತೆರೆದಿದೆ (Open)</button>
+              <button type="button" class="btn-state-pill" data-state="upcoming">ಮುಂಬರುವ (Upcoming)</button>
+              <button type="button" class="btn-state-pill" data-state="closed">ಮುಕ್ತಾಯ (Closed)</button>
+              <button type="button" class="btn-state-pill" data-state="reset">ಮರುಹೊಂದಿಸಿ (Reset)</button>
+            </div>
+          </div>
+
+          <!-- Digital Countdown Digits (Days, Hours, Mins, Secs) -->
+          <div class="window-timer-group">
+            <span id="window-timer-label" class="timer-label" data-i18n="timer_closes_in">ಮುಕ್ತಾಯಕ್ಕೆ ಉಳಿದ ಸಮಯ:</span>
+            <div class="countdown-digits-wrapper" aria-hidden="true">
+              <div class="digit-card">
+                <span id="timer-days" class="digit-num">01</span>
+                <span class="digit-unit" data-i18n="unit_days">ದಿನ</span>
+              </div>
+              <span class="timer-separator">:</span>
+              <div class="digit-card">
+                <span id="timer-hours" class="digit-num">14</span>
+                <span class="digit-unit" data-i18n="unit_hours">ಗಂಟೆ</span>
+              </div>
+              <span class="timer-separator">:</span>
+              <div class="digit-card">
+                <span id="timer-mins" class="digit-num">32</span>
+                <span class="digit-unit" data-i18n="unit_mins">ನಿಮಿಷ</span>
+              </div>
+              <span class="timer-separator">:</span>
+              <div class="digit-card">
+                <span id="timer-secs" class="digit-num">45</span>
+                <span class="digit-unit" data-i18n="unit_secs">ಸೆಕೆಂಡು</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Constituency Statistics 3-column grid -->
+        <div class="dashboard-grid-3col">
+          <div class="stat-box">
+            <span class="stat-box-label" data-i18n="stat_constituency">ಆಯ್ಕೆಯಾದ ವಿಧಾನಸಭಾ ಕ್ಷೇತ್ರ</span>
+            <span class="stat-box-value" id="overview-constituency-name">160 - ಸರ್ವಜ್ಞನಗರ</span>
+            <span class="stat-box-sub" id="overview-district">ಜಿಲ್ಲೆ: ಬೆಂಗಳೂರು ನಗರ</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-box-label" data-i18n="stat_electors">ನೋಂದಾಯಿತ ಮತದಾರರು</span>
+            <span class="stat-box-value" id="overview-electors">3,66,876</span>
+            <span class="stat-box-sub">ಅಂತಿಮ ಇಸಿಐ ಮತದಾರರ ಪಟ್ಟಿ</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-box-label" data-i18n="stat_turnout">ಮತದಾನ ಪ್ರಮಾಣ ಮತ್ತು ಚಲಾವಣೆ</span>
+            <span class="stat-box-value" id="overview-turnout">53.04%</span>
+            <span class="stat-box-sub"><span id="overview-polled">1,94,604</span> ಚಲಾವಣೆಯಾದ ಮಾನ್ಯ ಮತಗಳು</span>
+          </div>
+        </div>
+
+        <!-- Two Column Overview Layout -->
+        <div class="dashboard-grid-2col">
+          <!-- Left Column: Election Framework Table -->
+          <div class="civic-card">
+            <div class="civic-card-header">
+              <h3 class="civic-card-title" data-i18n="framework_title">ಚುನಾವಣಾ ಆಡಳಿತ ಚೌಕಟ್ಟು</h3>
+              <span class="demo-pill-badge">ಅಧಿಕೃತ ಇಸಿಐ ನಿಯಮ</span>
+            </div>
+            <table class="overview-table" aria-label="Electoral Framework Details" style="width:100%; border-collapse:collapse;">
+              <tbody>
+                <tr style="border-bottom:1px solid var(--border-subtle);">
+                  <th style="padding:10px 14px; text-align:left; font-size:11.5px;" data-i18n="authority_label">ಸಂವಿಧಾನಬದ್ಧ ಪ್ರಾಧಿಕಾರ</th>
+                  <td style="padding:10px 14px; font-weight:700;" data-i18n="authority_val">ಭಾರತ ಚುನಾವಣಾ ಆಯೋಗ (ECI)</td>
+                </tr>
+                <tr style="border-bottom:1px solid var(--border-subtle);">
+                  <th style="padding:10px 14px; text-align:left; font-size:11.5px;">ಸಂವಿಧಾನದ ನಿಯಮ</th>
+                  <td style="padding:10px 14px;">ವಿಧಿ 324, ಪ್ರಜಾಪ್ರಾತಿನಿಧ್ಯ ಕಾಯ್ದೆ, 1951</td>
+                </tr>
+                <tr style="border-bottom:1px solid var(--border-subtle);">
+                  <th style="padding:10px 14px; text-align:left; font-size:11.5px;" data-i18n="state_officer_label">ರಾಜ್ಯ ಚುನಾವಣಾಧಿಕಾರಿ</th>
+                  <td style="padding:10px 14px; font-weight:700;" data-i18n="state_officer_val">ಮುಖ್ಯ ಚುನಾವಣಾಧಿಕಾರಿ (CEO), ಕರ್ನಾಟಕ</td>
+                </tr>
+                <tr style="border-bottom:1px solid var(--border-subtle);">
+                  <th style="padding:10px 14px; text-align:left; font-size:11.5px;" data-i18n="ro_label">ಕ್ಷೇತ್ರ ಚುನಾವಣಾಧಿಕಾರಿ</th>
+                  <td style="padding:10px 14px;" id="overview-ro">ಚುನಾವಣಾಧಿಕಾರಿ, ೧೬೦-ಸರ್ವಜ್ಞನಗರ ವಿಧಾನಸಭಾ ಕ್ಷೇತ್ರ</td>
+                </tr>
+                <tr>
+                  <th style="padding:10px 14px; text-align:left; font-size:11.5px;" data-i18n="voting_system_label">ಭಾರತದ ಮತದಾನ ವಿಧಾನ</th>
+                  <td style="padding:10px 14px;" data-i18n="voting_system_val">ಸ್ವತಂತ್ರ EVM + ಕಾಗದದ ಆಡಿಟ್ ಟ್ರಯಲ್ (VVPAT)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Right Column: Primary Sources Provenance -->
+          <div class="civic-card">
+            <div class="civic-card-header">
+              <h3 class="civic-card-title">ಪ್ರಾಥಮಿಕ ದತ್ತಾಂಶ ಮೂಲಗಳು (Primary Sources)</h3>
+              <span class="header-chip verified">ಅಕ್ಟೋಬರ್ ೨೦೨೪ ಪರಿಶೀಲನೆ</span>
+            </div>
+            <div class="provenance-list" style="display:flex; flex-direction:column; gap:10px;">
+              <div class="provenance-item" style="display:flex; gap:10px; padding:10px 12px; background:var(--bg-subtle); border:1px solid var(--border-subtle); border-radius:var(--radius-md);">
+                <span>🔗</span>
+                <div>
+                  <div style="font-size:12.5px; font-weight:700;">ಇಸಿಐ ನೋಂದಾಯಿತ ರಾಜಕೀಯ ಪಕ್ಷಗಳು ಮತ್ತು ಚಿಹ್ನೆಗಳು</div>
+                  <a href="https://www.eci.gov.in/list-of-political-parties/" target="_blank" rel="noopener noreferrer" style="font-size:11.5px; color:var(--ka-red); font-weight:700;">
+                    eci.gov.in/list-of-political-parties/ (Notification 56/2023)
+                  </a>
+                </div>
+              </div>
+              <div class="provenance-item" style="display:flex; gap:10px; padding:10px 12px; background:var(--bg-subtle); border:1px solid var(--border-subtle); border-radius:var(--radius-md);">
+                <span>🔗</span>
+                <div>
+                  <div style="font-size:12.5px; font-weight:700;">ಇಸಿಐ ಸ್ಪರ್ಧಾತ್ಮಕ ಅಭ್ಯರ್ಥಿಗಳ ನಮೂನೆ 7A ಪಟ್ಟಿ</div>
+                  <a href="https://www.eci.gov.in/candidate-Politicalparty" target="_blank" rel="noopener noreferrer" style="font-size:11.5px; color:var(--ka-red); font-weight:700;">
+                    eci.gov.in/candidate-Politicalparty
+                  </a>
+                </div>
+              </div>
+              <div class="provenance-item" style="display:flex; gap:10px; padding:10px 12px; background:var(--bg-subtle); border:1px solid var(--border-subtle); border-radius:var(--radius-md);">
+                <span>🔗</span>
+                <div>
+                  <div style="font-size:12.5px; font-weight:700;">ಇಸಿಐ ಫಲಿತಾಂಶ ಪೋರ್ಟಲ್ (ನಮೂನೆ 20)</div>
+                  <a href="https://results.eci.gov.in/" target="_blank" rel="noopener noreferrer" style="font-size:11.5px; color:var(--ka-red); font-weight:700;">
+                    results.eci.gov.in
+                  </a>
+                </div>
+              </div>
+              <div class="provenance-item" style="display:flex; gap:10px; padding:10px 12px; background:var(--bg-subtle); border:1px solid var(--border-subtle); border-radius:var(--radius-md);">
+                <span>🔗</span>
+                <div>
+                  <div style="font-size:12.5px; font-weight:700;">ಮುಖ್ಯ ಚುನಾವಣಾಧಿಕಾರಿ (CEO), ಕರ್ನಾಟಕ ಅಧಿಕೃತ ಜಾಲತಾಣ</div>
+                  <a href="https://ceokarnataka.karnataka.gov.in/" target="_blank" rel="noopener noreferrer" style="font-size:11.5px; color:var(--ka-red); font-weight:700;">
+                    ceokarnataka.karnataka.gov.in
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top: 16px; display: flex; justify-content: flex-end;">
+          <button type="button" class="btn-primary" onclick="switchView('ballot')">
+            <span data-i18n="tab_ballot">ಅಧಿಕೃತ ಮತಪತ್ರ</span> →
+          </button>
+        </div>
+      </section>
+
+      <!-- ==============================================================
+           VIEW 2: OFFICIAL BALLOT (CONSTITUENCY-SPECIFIC)
+           ============================================================== -->
+      <section id="view-ballot" class="view-container" role="tabpanel" aria-labelledby="tab-ballot">
+        <div class="view-header">
+          <div class="view-header-eyebrow">
+            <span>🗳️</span> <span data-i18n="tab_ballot">ಅಧಿಕೃತ ಮತಪತ್ರ</span>
+          </div>
+          <h2 class="view-header-title" data-i18n="ballot_title">ವಿಧಾನಸಭಾ ಕ್ಷೇತ್ರದ ಸ್ಪರ್ಧಾತ್ಮಕ ಅಭ್ಯರ್ಥಿಗಳು</h2>
+          <p class="view-header-desc" data-i18n="ballot_desc">
+            ಇಸಿಐ ನಮೂನೆ 7A ಅನ್ವಯ ಅಧಿಕೃತ ಅಭ್ಯರ್ಥಿಗಳ ಪಟ್ಟಿ, ಪಕ್ಷ ಮತ್ತು ಚಿಹ್ನೆಗಳು.
+          </p>
+        </div>
+
+        <!-- Visible Voting Precautions Panel on Ballot -->
+        <div id="precautions-panel" class="precautions-card">
+          <div class="precautions-header">
+            <span class="precautions-header-icon">⚠️</span>
+            <div class="precautions-title-group">
+              <h3 data-i18n="precautions_main_title">ಮತದಾನದ ಪ್ರಮುಖ ಮುನ್ನೆಚ್ಚರಿಕೆಗಳು (Voting Precautions)</h3>
+              <p data-i18n="precautions_main_sub">ಡೆಮೊ ಮತದಾನ ಮಾಡುವ ಮುನ್ನ ಈ ಕೆಳಗಿನ ಮಾರ್ಗಸೂಚಿಗಳನ್ನು ತಪ್ಪದೇ ಗಮನಿಸಿ:</p>
+            </div>
+          </div>
+          <div id="precautions-list-grid" class="precautions-list-grid"></div>
+        </div>
+
+        <!-- Voter Demo Token Authentication Box -->
+        <div class="voter-auth-box">
+          <div class="voter-auth-header">
+            <span class="voter-auth-title" data-i18n="voter_step1">
+              🔑 ಹಂತ ೧: ಡೆಮೊ ಪರಿಶೀಲನಾ ಕೋಡ್ ಒದಗಿಸಿ
+            </span>
+            <span class="demo-pill-badge">Zero PII Allowed</span>
+          </div>
+          <div class="voter-input-row">
+            <input type="text" id="voter-token-input" class="voter-token-input" placeholder="ಡೆಮೊ ಕೋಡ್ ನಮೂದಿಸಿ (ಉದಾ: KA-DEMO-1001)" data-i18n-ph="voter_input_ph" autocomplete="off">
+            <button type="button" id="btn-verify-voter" class="btn-voter-verify" data-i18n="btn_verify">ಟೋಕನ್ ಪರಿಶೀಲಿಸಿ</button>
+          </div>
+          <div class="quick-tokens-wrapper">
+            <span class="quick-tokens-label" data-i18n="quick_tokens_label">ಅಧಿಕೃತ ಡೆಮೊ ಟೋಕನ್ ಆಯ್ಕೆಮಾಡಿ:</span>
+            <button type="button" class="quick-token-pill" data-token="KA-DEMO-1001">KA-DEMO-1001</button>
+            <button type="button" class="quick-token-pill" data-token="KA-DEMO-1002">KA-DEMO-1002</button>
+            <button type="button" class="quick-token-pill" data-token="KA-DEMO-1003">KA-DEMO-1003</button>
+            <button type="button" class="quick-token-pill" data-token="KA-DEMO-1004">KA-DEMO-1004</button>
+            <button type="button" class="quick-token-pill" data-token="KA-DEMO-1005">KA-DEMO-1005</button>
+          </div>
+          <div id="voter-status-feedback" class="voter-status-feedback" aria-live="polite"></div>
+        </div>
+
+        <!-- Ballot Search & Filter Bar -->
+        <div class="ballot-toolbar">
+          <input type="search" id="ballot-search-input" class="ballot-search-input" placeholder="ಅಭ್ಯರ್ಥಿ, ಪಕ್ಷ ಅಥವಾ ಚಿಹ್ನೆಯನ್ನು ಹುಡುಕಿ..." data-i18n-ph="ballot_search_ph" aria-label="Search candidates">
+          
+          <div class="ballot-filter-tabs" role="group" aria-label="Filter candidates by status">
+            <button type="button" class="ballot-filter-btn active" data-filter="all" data-i18n="filter_all">ಎಲ್ಲಾ ಅಭ್ಯರ್ಥಿಗಳು</button>
+            <button type="button" class="ballot-filter-btn" data-filter="national" data-i18n="filter_national">ರಾಷ್ಟ್ರೀಯ ಪಕ್ಷಗಳು</button>
+            <button type="button" class="ballot-filter-btn" data-filter="state" data-i18n="filter_state">ರಾಜ್ಯ ಪಕ್ಷಗಳು</button>
+            <button type="button" class="ballot-filter-btn" data-filter="registered" data-i18n="filter_registered">ನೋಂದಾಯಿತ / ಪಕ್ಷೇತರ</button>
+            <button type="button" class="ballot-filter-btn" data-filter="nota" data-i18n="filter_nota">ನೋಟಾ (NOTA)</button>
+          </div>
+        </div>
+
+        <!-- EVM Ballot Unit Table -->
+        <table class="ballot-table" aria-label="Candidate Ballot List">
+          <thead>
+            <tr>
+              <th style="width: 60px; text-align: center;" data-i18n="th_sl">ಕ್ರ.ಸಂ.</th>
+              <th data-i18n="th_candidate">ಅಭ್ಯರ್ಥಿಯ ಹೆಸರು (ಕನ್ನಡ / English)</th>
+              <th data-i18n="th_party">ಪಕ್ಷದ ವಿವರ ಮತ್ತು ಮಾನ್ಯತೆ</th>
+              <th style="width: 140px; text-align: center;" data-i18n="th_symbol">ಅಧಿಕೃತ ಚಿಹ್ನೆ</th>
+              <th style="width: 80px; text-align: center;" data-i18n="th_select">ಆಯ್ಕೆ</th>
+            </tr>
+          </thead>
+          <tbody id="candidate-roster-body" role="radiogroup" aria-label="Candidates">
+            <!-- Populated dynamically by JS -->
+          </tbody>
+        </table>
+
+        <!-- Sticky Bottom Review Bar -->
+        <div class="ballot-action-bar">
+          <div class="ballot-selection-summary">
+            <span class="ballot-selection-status" data-i18n="ballot_step2">ಹಂತ ೨: ನಿಮ್ಮ ಆಯ್ಕೆ</span>
+            <span id="selected-candidate-display" class="ballot-selected-candidate-text" data-i18n="no_cand_selected">ಯಾವುದೇ ಅಭ್ಯರ್ಥಿ ಆಯ್ಕೆಯಾಗಿಲ್ಲ</span>
+          </div>
+          <button type="button" id="btn-review-selection" class="btn-review-selection" disabled>
+            <span data-i18n="btn_review">ಆಯ್ಕೆ ಪರಿಶೀಲಿಸಿ ಮತ್ತು ಸಲ್ಲಿಸಿ →</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- ==============================================================
+           VIEW 3: VOTE RECEIPT (ZERO-KNOWLEDGE / NON-IDENTIFYING)
+           ============================================================== -->
+      <section id="view-receipt" class="view-container" role="tabpanel" aria-labelledby="tab-receipt">
+        <div class="view-header">
+          <div class="view-header-eyebrow">
+            <span>🧾</span> <span data-i18n="tab_receipt">ಮತದಾನ ರಶೀದಿ</span>
+          </div>
+          <h2 class="view-header-title" data-i18n="receipt_title">ಸಿಮ್ಯುಲೇಶನ್ ಮತದಾನ ರಶೀದಿ</h2>
+          <p class="view-header-desc" data-i18n="receipt_desc">
+            ಮತದಾರರ ಗುರುತು ಅಥವಾ ಆಯ್ಕೆಯನ್ನು ಬಹಿರಂಗಪಡಿಸದೆ ಮೆಂಪೂಲ್‌ಗೆ ಮತ ದಾಖಲಾದ ಕ್ರಿಪ್ಟೋಗ್ರಾಫಿಕ್ ಪುರಾವೆ.
+          </p>
+        </div>
+
+        <div class="receipt-wrapper">
+          <!-- Empty State (No vote submitted yet) -->
+          <div id="receipt-empty-state" class="civic-card" style="text-align: center; padding: 48px 24px;">
+            <div style="font-size: 40px; margin-bottom: 12px;">🗳️</div>
+            <h3 style="font-size: 16px; font-weight: 800; color: var(--text-primary); margin-bottom: 6px;" data-i18n="receipt_empty_title">ಪ್ರಸ್ತುತ ಅಧಿವೇಶನದಲ್ಲಿ ಮತ ಚಲಾಯಿಸಲಾಗಿಲ್ಲ</h3>
+            <p style="font-size: 13px; color: var(--text-muted); max-width: 440px; margin: 0 auto 20px auto;" data-i18n="receipt_empty_desc">
+              ಡೆಮೊ ರಶೀದಿಯನ್ನು ಪಡೆಯಲು ಅಧಿಕೃತ ಮತಪತ್ರದಲ್ಲಿ ಮತದಾನ ಪ್ರಕ್ರಿಯೆಯನ್ನು ಪೂರ್ಣಗೊಳಿಸಿ.
+            </p>
+            <button type="button" class="btn-primary" onclick="switchView('ballot')" data-i18n="receipt_btn_to_ballot">ಮತಪತ್ರಕ್ಕೆ ತೆರಳಿ</button>
+          </div>
+
+          <!-- Active Receipt Container -->
+          <div id="receipt-container" style="display: none;"></div>
+        </div>
+      </section>
+
+      <!-- ==============================================================
+           VIEW 4: PARTY DIRECTORY
+           ============================================================== -->
+      <section id="view-directory" class="view-container" role="tabpanel" aria-labelledby="tab-directory">
+        <div class="view-header">
+          <div class="view-header-eyebrow">
+            <span>🏛️</span> <span data-i18n="tab_directory">ರಾಜಕೀಯ ಪಕ್ಷಗಳ ಕೋಶ</span>
+          </div>
+          <h2 class="view-header-title" data-i18n="dir_title">ಮಾನ್ಯತೆ ಪಡೆದ ರಾಜಕೀಯ ಪಕ್ಷಗಳ ಕೋಶ</h2>
+          <p class="view-header-desc" data-i18n="dir_desc">
+            ಪ್ರಜಾಪ್ರಾತಿನಿಧ್ಯ ಕಾಯ್ದೆ 1951 ರ ಸೆಕ್ಷನ್ 29A ಅಡಿಯಲ್ಲಿ ನೋಂದಾಯಿತ ಪಕ್ಷಗಳು.
+          </p>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="ballot-toolbar">
+          <input type="search" id="party-search-input" class="ballot-search-input" placeholder="ಪಕ್ಷದ ಹೆಸರು ಅಥವಾ ಸಂಕ್ಷಿಪ್ತ ರೂಪವನ್ನು ಹುಡುಕಿ..." data-i18n-ph="dir_search_ph" aria-label="Search political parties">
+          
+          <div class="ballot-filter-tabs">
+            <button type="button" class="party-filter-btn active" data-filter="all" data-i18n="filter_all">ಎಲ್ಲಾ ಪಕ್ಷಗಳು</button>
+            <button type="button" class="party-filter-btn" data-filter="national" data-i18n="filter_national">ರಾಷ್ಟ್ರೀಯ ಪಕ್ಷಗಳು</button>
+            <button type="button" class="party-filter-btn" data-filter="state" data-i18n="filter_state">ರಾಜ್ಯ (ಕರ್ನಾಟಕ)</button>
+            <button type="button" class="party-filter-btn" data-filter="registered" data-i18n="filter_registered">ನೋಂದಾಯಿತ ಪಕ್ಷಗಳು</button>
+            <button type="button" class="party-filter-btn" data-filter="contesting">ಕ್ಷೇತ್ರದಲ್ಲಿ ಸ್ಪರ್ಧಿಸುತ್ತಿರುವ ಪಕ್ಷಗಳು</button>
+          </div>
+        </div>
+
+        <!-- Party Cards Grid -->
+        <div id="party-grid-container" class="party-grid"></div>
+      </section>
+
+      <!-- ==============================================================
+           VIEW 5: TRANSPARENT LEDGER EXPLORER
+           ============================================================== -->
+      <section id="view-ledger" class="view-container" role="tabpanel" aria-labelledby="tab-ledger">
+        <div class="view-header">
+          <div class="view-header-eyebrow">
+            <span>⛓️</span> <span data-i18n="tab_ledger">ಲೆಡ್ಜರ್ ಅನ್ವೇಷಕ</span>
+          </div>
+          <h2 class="view-header-title" data-i18n="ledger_title">ಪಾರದರ್ಶಕ ಮಾದರಿ ಬ್ಲಾಕ್‌ಚೈನ್ ಲೆಡ್ಜರ್</h2>
+          <p class="view-header-desc" data-i18n="ledger_desc">
+            ಖಚಿತಪಡಿಸಿದ ಬ್ಲಾಕ್‌ಗಳು, ಹಿಂದಿನ ಹ್ಯಾಶ್‌ಗಳು, ಮರ್ಕಲ್ ರೂಟ್ ಮತ್ತು ಅನಾಮಧೇಯ ವಹಿವಾಟುಗಳನ್ನು ವೀಕ್ಷಿಸಿ.
+          </p>
+        </div>
+
+        <div class="civic-notice-banner">
+          <div class="civic-notice-icon">ℹ️</div>
+          <div class="civic-notice-content">
+            <h4>ಸ್ಥಳೀಯ ಮಾದರಿ ಲೆಡ್ಜರ್ ಮಾಹಿತಿ (Simulated Mock Architecture)</h4>
+            <p>
+              ಇದು SHA-256 ಹ್ಯಾಶ್ ಮತ್ತು ಮರ್ಕಲ್ ರೂಟ್ ಆಧರಿತ ಪ್ರದರ್ಶನ ಲೆಡ್ಜರ್ ಆಗಿದೆ. ಯಾವುದೇ ನೈಜ ಮತ ಅಥವಾ ಸಾರ್ವಜನಿಕ ಕ್ರಿಪ್ಟೋ ಕರೆನ್ಸಿಗಳಿಲ್ಲ.
+              ಮೆಂಪೂಲ್‌ನಲ್ಲಿರುವ ಮತಗಳು ಗಣಿಗಾರಿಕೆ (Mining) ಆದ ನಂತರವೇ ಫಲಿತಾಂಶದಲ್ಲಿ ಲೆಕ್ಕಹಾಕಲ್ಪಡುತ್ತವೆ.
+            </p>
+          </div>
+        </div>
+
+        <!-- Ledger Top Stats -->
+        <div class="ledger-stats-banner">
+          <div class="stat-box">
+            <span class="stat-box-label" data-i18n="stat_chain_height">ಬ್ಲಾಕ್ ಎತ್ತರ</span>
+            <span class="stat-box-value" id="stat-block-count">1</span>
+            <span class="stat-box-sub">Genesis Block #0 ಒಳಗೊಂಡಂತೆ</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-box-label" data-i18n="stat_mempool">ಮೆಂಪೂಲ್ ಬಾಕಿ</span>
+            <span class="stat-box-value" id="stat-mempool-count">0</span>
+            <span class="stat-box-sub">ಮೈನ್ ಆಗಬೇಕಿರುವ ವಹಿವಾಟುಗಳು</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-box-label" data-i18n="stat_difficulty">ಮೈನಿಂಗ್ ಕಷ್ಟತೆ</span>
+            <span class="stat-box-value">00 (SHA-256)</span>
+            <span class="stat-box-sub">Proof-of-work Prefix</span>
+          </div>
+          <div class="stat-box" style="justify-content: center; align-items: flex-start;">
+            <button type="button" id="btn-mine-block" class="btn-mine-block" disabled>
+              <span data-i18n="btn_mine">⛏️ ಬಾಕಿ ಇರುವ ಬ್ಲಾಕ್ ಮೈನ್ ಮಾಡಿ</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Two Column: Blocks vs Confirmed Results -->
+        <div class="dashboard-grid-2col">
+          <!-- Left: Block Feed -->
+          <div>
+            <h3 style="font-size: 15px; font-weight: 800; margin-bottom: 14px; color: var(--text-primary);">
+              ಬ್ಲಾಕ್‌ಗಳ ಕಾಲಾನುಕ್ರಮದ ಇತಿಹಾಸ (Chronological Blocks)
+            </h3>
+            <div id="blocks-container" class="block-cards-list"></div>
+          </div>
+
+          <!-- Right: Confirmed Results Tallies -->
+          <div>
+            <div class="civic-card">
+              <div class="civic-card-header">
+                <h3 class="civic-card-title" data-i18n="results_tally_title">ಖಚಿತಪಡಿಸಿದ ಬ್ಲಾಕ್‌ಗಳ ಒಟ್ಟು ಫಲಿತಾಂಶಗಳು</h3>
+                <span class="header-chip verified">ಮೈನ್ ಆದ ಬ್ಲಾಕ್‌ಗಳು ಮಾತ್ರ</span>
+              </div>
+              <div id="results-tally-container" class="results-tally-container">
+                <p style="color: var(--text-muted); font-size: 13px;">ಫಲಿತಾಂಶಗಳು ಲೋಡ್ ಆಗುತ್ತಿವೆ...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==============================================================
+           VIEW 6: PRIVACY, SECURITY & CIVIC LIMITATIONS
+           ============================================================== -->
+      <section id="view-limitations" class="view-container" role="tabpanel" aria-labelledby="tab-limitations">
+        <div class="view-header">
+          <div class="view-header-eyebrow">
+            <span>⚖️</span> <span data-i18n="tab_limitations">ಗೌಪ್ಯತೆ ಮತ್ತು ಮಿತಿಗಳು</span>
+          </div>
+          <h2 class="view-header-title" data-i18n="limits_title">ಬ್ಲಾಕ್‌ಚೈನ್ ತಂತ್ರಜ್ಞಾನವು ಆನ್‌ಲೈನ್ ಮತದಾನವನ್ನು ಏಕೆ ಸಿದ್ಧಪಡಿಸುವುದಿಲ್ಲ?</h2>
+          <p class="view-header-desc" data-i18n="limits_desc">
+            ರಿಮೋಟ್ ಡಿಜಿಟಲ್ ಮತದಾನದಲ್ಲಿನ ಕಂಪ್ಯೂಟರ್ ಭದ್ರತೆ, ಸಾಧನದ ದೋಷಗಳು ಮತ್ತು ಪ್ರಜಾಪ್ರಭುತ್ವದ ಮಿತಿಗಳ ವಿಶ್ಲೇಷಣೆ.
+          </p>
+        </div>
+
+        <div class="limitations-content">
+          <article class="civic-card" style="margin-bottom:16px;">
+            <h3 style="font-size:16px; font-weight:800; color:var(--text-primary); margin-bottom:8px;">
+              ೧. ರಹಸ್ಯ ಮತದಾನ ಮತ್ತು ಸಾರ್ವಜನಿಕ ಲೆಡ್ಜರ್ ವಿರೋಧಾಭಾಸ (The Secret Ballot Paradox)
+            </h3>
+            <p style="font-size:13px; color:var(--text-secondary); line-height:1.6; margin-bottom:8px;">
+              ಬ್ಲಾಕ್‌ಚೈನ್ ಒಂದು ಸಾರ್ವಜನಿಕ ಮತ್ತು ಶಾಶ್ವತ ದಾಖಲೆಯಾಗಿದೆ. ಆದರೆ ಪ್ರಜಾಪ್ರಭುತ್ವದ ಚುನಾವಣೆಯಲ್ಲಿ ಮತದಾರನ ಆಯ್ಕೆಯು ಸಂಪೂರ್ಣ ರಹಸ್ಯವಾಗಿರಬೇಕು.
+              ಮತದಾರನಿಗೆ ತನ್ನ ಮತ ಯಾರಿಗೆ ಚಲಾವಣೆಯಾಗಿದೆ ಎಂದು ತೋರಿಸುವ ಯಾವುದೇ ಸಾರ್ವಜನಿಕ ರಶೀದಿ ನೀಡಿದರೆ, ಅದನ್ನು ಮತ-ಖರೀದಿದಾರರು ಅಥವಾ ಬೆದರಿಕೆದಾರರು ದುರುಪಯೋಗಪಡಿಸಿಕೊಳ್ಳಬಹುದು.
+            </p>
+          </article>
+
+          <article class="civic-card" style="margin-bottom:16px;">
+            <h3 style="font-size:16px; font-weight:800; color:var(--text-primary); margin-bottom:8px;">
+              ೨. "ಗಾರ್ಬೇಜ್ ಇನ್, ಗಾರ್ಬೇಜ್ ಔಟ್" ಸಾಧನದ ಭದ್ರತಾ ಕೊರತೆ (Device Security Dilemma)
+            </h3>
+            <p style="font-size:13px; color:var(--text-secondary); line-height:1.6; margin-bottom:8px;">
+              ಬ್ಲಾಕ್‌ಚೈನ್ ತನ್ನೊಳಗೆ ನಮೂದಾದ ನಂತರ ದಾಖಲೆಯನ್ನು ಬದಲಾಯಿಸದಂತೆ ರಕ್ಷಿಸಬಲ್ಲದು. ಆದರೆ ಮತ ಚಲಾಯಿಸಲು ಬಳಸಿದ ಮೊಬೈಲ್ ಅಥವಾ ಲ್ಯಾಪ್‌ಟಾಪ್‌ನಲ್ಲಿ ಮಾಲ್ವೇರ್ (Malware) ಅಥವಾ ಸ್ಪೈವೇರ್ ಇಲ್ಲವೆಂದು ಅದು ಖಾತರಿಪಡಿಸುವುದಿಲ್ಲ.
+              ಸಾಧನದಲ್ಲಿ ವೈರಸ್ ಇದ್ದರೆ, ಮತದಾರನು ಒಂದು ಪಕ್ಷಕ್ಕೆ ಮತ ನೀಡಿದರೂ, ಮಾಲ್ವೇರ್ ಬೇರೆ ಪಕ್ಷಕ್ಕೆ ಸಹಿ ಮಾಡಿ ಬ್ಲಾಕ್‌ಚೈನ್‌ಗೆ ಕಳುಹಿಸಬಹುದು.
+            </p>
+          </article>
+
+          <article class="civic-card" style="margin-bottom:16px;">
+            <h3 style="font-size:16px; font-weight:800; color:var(--text-primary); margin-bottom:8px;">
+              ೩. ಭೌತಿಕ EVM + VVPAT ಮತ್ತು ಪ್ರತ್ಯೇಕ ಮತಗಟ್ಟೆಯ ಮಹತ್ವ (Physical EVMs vs Remote Voting)
+            </h3>
+            <p style="font-size:13px; color:var(--text-secondary); line-height:1.6; margin-bottom:8px;">
+              ಭಾರತದಲ್ಲಿ ಬಳಸಲಾಗುವ ಇವಿಎಂಗಳು ಯಾವುದೇ ಇಂಟರ್ನೆಟ್ ಅಥವಾ ವೈರ್‌ಲೆಸ್ ನೆಟ್‌ವರ್ಕ್‌ಗೆ ಸಂಪರ್ಕಗೊಂಡಿರುವುದಿಲ್ಲ (Standalone Units).
+              ಅಲ್ಲದೆ, ಮುಚ್ಚಿದ ಮತದಾನ ಕೊಠಡಿಯೊಳಗೆ ಮತ ಚಲಾಯಿಸುವುದರಿಂದ ಯಾರೂ ಒತ್ತಡ ಹೇರಲು ಸಾಧ್ಯವಿಲ್ಲ, ಮತ್ತು VVPAT ಕಾಗದದ ಚೀಟಿಯು ಸ್ವತಂತ್ರ ಭೌತಿಕ ಲೆಕ್ಕಪರಿಶೋಧನೆಗೆ ಅನುವು ಮಾಡಿಕೊಡುತ್ತದೆ.
+            </p>
+          </article>
+
+          <article class="civic-card">
+            <h3 style="font-size:16px; font-weight:800; color:var(--text-primary); margin-bottom:8px;">
+              ೪. ಕೇಂದ್ರೀಕೃತ ಗುರುತಿನ ದೃಢೀಕರಣದ ಸವಾಲು (Identity Authentication Dilemma)
+            </h3>
+            <p style="font-size:13px; color:var(--text-secondary); line-height:1.6;">
+              "ಒಬ್ಬ ವ್ಯಕ್ತಿ, ಒಂದು ಮತ" ಖಚಿತಪಡಿಸಲು ಸರ್ಕಾರವೇ ಡಿಜಿಟಲ್ ಕೀ ನೀಡಬೇಕಾಗುತ್ತದೆ. ಇದು ಕೇಂದ್ರೀಕೃತವಾಗಿದ್ದು, ಯಾವುದೇ ಆಡಳಿತಾರೂಢ ಸಂಸ್ಥೆಯು ಮತದಾರರನ್ನು ವಂಚಿತಗೊಳಿಸುವ ಅಥವಾ ನಕಲಿ ಮತದಾರರನ್ನು ಸೃಷ್ಟಿಸುವ ಅಪಾಯವನ್ನು ತಡೆಯುವುದು ಕಷ್ಟ.
+            </p>
+          </article>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<!-- ==========================================================================
+     Accessible Modals: Review Selection & Trust Boundary Disclaimers
+     ========================================================================== -->
+
+<!-- Review Selection Dialog -->
+<dialog id="review-selection-dialog" class="civic-dialog" aria-labelledby="review-dialog-title">
+  <div class="dialog-header">
+    <h3 id="review-dialog-title" class="dialog-title" data-i18n="review_dialog_title">ಮತದಾನದ ಆಯ್ಕೆ ಪರಿಶೀಲನೆ</h3>
+    <button type="button" class="btn-dialog-close" id="btn-cancel-review" aria-label="Close dialog">✕</button>
+  </div>
+  <div class="dialog-body">
+    <p style="margin-bottom: 12px;" data-i18n="review_dialog_intro">ಸ್ಥಳೀಯ ಲೆಡ್ಜರ್‌ಗೆ ದಾಖಲಿಸುವ ಮೊದಲು ನಿಮ್ಮ ಆಯ್ಕೆಯನ್ನು ದಯವಿಟ್ಟು ಪರಿಶೀಲಿಸಿ:</p>
+    <div id="review-summary-details"></div>
+  </div>
+  <div class="dialog-actions">
+    <button type="button" class="btn-secondary" onclick="document.getElementById('review-selection-dialog').close()" data-i18n="btn_edit_selection">ಆಯ್ಕೆ ತಿದ್ದುಪಡಿ</button>
+    <button type="button" id="btn-confirm-vote" class="btn-primary" data-i18n="btn_confirm_submit">ಮತದಾನ ಖಚಿತಪಡಿಸಿ ಮತ್ತು ದಾಖಲಿಸಿ</button>
+  </div>
+</dialog>
+
+<!-- Disclaimers & Trust Boundary Modal -->
+<dialog id="disclaimer-dialog" class="civic-dialog" aria-labelledby="disclaimer-dialog-title">
+  <div class="dialog-header">
+    <h3 id="disclaimer-dialog-title" class="dialog-title">ನಾಗರಿಕ ಗಡಿರೇಖೆ ಮತ್ತು ನಿರಾಕರಣೆ (Disclaimers)</h3>
+    <button type="button" class="btn-dialog-close" id="btn-close-disclaimer" aria-label="Close dialog">✕</button>
+  </div>
+  <div class="dialog-body">
+    <div style="background: var(--ka-yellow-light); border: 1.5px solid var(--ka-yellow-border); padding: 14px; border-radius: var(--radius-md); margin-bottom: 14px;">
+      <strong style="color: var(--ka-gold); font-size: 13.5px;">ಶೈಕ್ಷಣಿಕ ಡೆಮೊ ಪ್ರದರ್ಶನ ಮಾತ್ರ (Demonstration Prototype)</strong>
+      <p style="font-size: 12px; color: #78350f; margin-top: 4px;">
+        ಈ ಅಪ್ಲಿಕೇಶನ್ ಭಾರತ ಚುನಾವಣಾ ಆಯೋಗ (ECI) ಅಥವಾ ಕರ್ನಾಟಕ ಸರ್ಕಾರದ ಅಧಿಕೃತ ಸೇವೆಯಲ್ಲ.
+      </p>
+    </div>
+    <ul style="padding-left: 18px; font-size: 12.5px; color: var(--text-secondary); display: flex; flex-direction: column; gap: 8px;">
+      <li>ಅಭ್ಯರ್ಥಿಗಳ ಮತ್ತು ಪಕ್ಷಗಳ ದತ್ತಾಂಶವನ್ನು ೨೦೨೩ ರ ಕರ್ನಾಟಕ ವಿಧಾನಸಭಾ ಚುನಾವಣೆಯ ಅಧಿಕೃತ ಗೆಜೆಟ್ ದಾಖಲೆಗಳಿಂದ (ನಮೂನೆ 7A / 20) ಪಡೆಯಲಾಗಿದೆ.</li>
+      <li>ಡೆಮೊ ಟೋಕನ್‌ಗಳು (ಉದಾ: KA-DEMO-1001) ಕಾಲ್ಪನಿಕ ಗುರುತಿಸುವಿಕೆಗಳು ಮಾತ್ರ. ನೈಜ EPIC, ಆಧಾರ್ ಅಥವಾ ಬಯೋಮೆಟ್ರಿಕ್ ದಾಖಲೆಗಳನ್ನು ಎಂದಿಗೂ ಕೇಳಲಾಗುವುದಿಲ್ಲ.</li>
+      <li>ಸ್ಥಳೀಯ ಲೆಡ್ಜರ್ SHA-256 ಸಿಮ್ಯುಲೇಶನ್ ಆಗಿದ್ದು ಯಾವುದೇ ಸಾರ್ವಜನಿಕ ಕ್ರಿಪ್ಟೋ ನೆಟ್‌ವರ್ಕ್‌ಗೆ ಸಂಪರ್ಕ ಹೊಂದಿಲ್ಲ.</li>
+    </ul>
+  </div>
+  <div class="dialog-actions">
+    <button type="button" class="btn-primary" onclick="document.getElementById('disclaimer-dialog').close()">ಅರ್ಥವಾಯಿತು (Understood)</button>
+  </div>
+</dialog>
+
+<!-- Application Scripts -->
+<script src="/static/js/app.js"></script>
+</body>
+</html>

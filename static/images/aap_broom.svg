@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <rect width="100" height="100" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"/>
+  <!-- Handle -->
+  <line x1="82" y1="18" x2="48" y2="52" stroke="#78350f" stroke-width="7" stroke-linecap="round"/>
+  <!-- Binding -->
+  <rect x="42" y="48" width="14" height="8" rx="2" fill="#d97706" transform="rotate(-45 49 52)"/>
+  <!-- Bristles -->
+  <path d="M 44,56 Q 30,70 16,84 L 20,88 Q 36,74 50,60 Z" fill="#b45309"/>
+  <path d="M 40,60 Q 24,76 12,88 L 16,92 Q 32,78 46,64 Z" fill="#92400e"/>
+  <path d="M 48,52 Q 38,70 26,88 L 30,90 Q 42,72 52,56 Z" fill="#d97706"/>
+  <text x="50" y="96" font-family="Arial, sans-serif" font-size="9" font-weight="bold" text-anchor="middle" fill="#64748b">BROOM (AAP)</text>
+</svg>

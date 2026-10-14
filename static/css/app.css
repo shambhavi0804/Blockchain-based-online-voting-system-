@@ -1,0 +1,1787 @@
+/* ==========================================================================
+   Karnataka Legislative Assembly Blockchain Voting Demo
+   Design System: White / Light Civic-Tech Theme with Karnataka Identity Accents
+   Language: Kannada-First / Bilingual Typography & Responsive Architecture
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Tiro+Kannada:ital@0;1&display=swap');
+
+:root {
+  /* Surface & Background Colors */
+  --bg-canvas: #ffffff;
+  --bg-subtle: #f8fafc;
+  --bg-surface: #ffffff;
+  --bg-surface-hover: #f1f5f9;
+  --bg-surface-active: #e2e8f0;
+  --bg-inset: #f1f5f9;
+
+  /* Border Colors */
+  --border-subtle: #e2e8f0;
+  --border-medium: #cbd5e1;
+  --border-strong: #94a3b8;
+
+  /* Text & Content Colors */
+  --text-primary: #0f172a;    /* Crisp charcoal */
+  --text-secondary: #334155;  /* Slate 700 */
+  --text-muted: #64748b;      /* Slate 500 */
+  --text-inverse: #ffffff;
+
+  /* Karnataka State Identity Accents (Arisina-Kumkuma: Crimson & Gold) */
+  --ka-red: #b91c1c;          /* Karnataka Flag Red / Kumkuma */
+  --ka-red-light: #fef2f2;
+  --ka-red-border: #fecaca;
+  --ka-yellow: #eab308;       /* Karnataka Flag Yellow / Arisina */
+  --ka-yellow-light: #fefce8;
+  --ka-yellow-border: #fef08a;
+  --ka-gold: #b45309;
+
+  /* Civic Neutral Blue */
+  --civic-navy: #1e3a8a;
+  --civic-navy-light: #eff6ff;
+  --civic-navy-border: #bfdbfe;
+
+  /* Status Tokens */
+  --status-green: #15803d;
+  --status-green-bg: #f0fdf4;
+  --status-green-border: #bbf7d0;
+
+  --status-amber: #d97706;
+  --status-amber-bg: #fffbeb;
+  --status-amber-border: #fde68a;
+
+  --status-red: #b91c1c;
+  --status-red-bg: #fef2f2;
+  --status-red-border: #fecaca;
+
+  /* Typography Stacks (Times New Roman primary with Kannada serif fallbacks) */
+  --font-times: 'Times New Roman', Times, Baskerville, Georgia, serif;
+  --font-kannada: 'Times New Roman', Times, 'Tiro Kannada', 'Noto Serif Kannada', serif;
+  --font-sans: 'Times New Roman', Times, serif;
+  --font-mono: 'Times New Roman', Times, ui-monospace, SFMono-Regular, Consolas, monospace;
+
+  /* Line Heights (Extra space for Kannada matras and vattakshara) */
+  --lh-body: 1.6;
+  --lh-heading: 1.35;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+
+  /* Radii */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-full: 9999px;
+
+  /* Layout dimensions */
+  --header-height: 72px;
+  --sidebar-width: 270px;
+}
+
+/* Reset & Box Sizing */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Times New Roman', Times, var(--font-kannada), serif;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  background-color: var(--bg-canvas);
+  color: var(--text-primary);
+  font-family: 'Times New Roman', Times, var(--font-kannada), serif;
+  font-size: 15px;
+  line-height: var(--lh-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6,
+p, span, a, label, li,
+button, input, select, textarea, optgroup, option,
+table, th, td, dialog {
+  font-family: 'Times New Roman', Times, var(--font-kannada), serif;
+}
+
+/* Accessible Focus States */
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible {
+  outline: 3px solid var(--ka-red);
+  outline-offset: 2px;
+}
+
+/* ==========================================================================
+   Full-Screen Application Shell
+   ========================================================================== */
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  background: var(--bg-canvas);
+}
+
+/* Top App Header with Karnataka Flag Accent Stripe */
+.app-header {
+  height: var(--header-height);
+  background: var(--bg-surface);
+  border-bottom: 2px solid var(--border-subtle);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  flex-shrink: 0;
+  z-index: 30;
+}
+
+/* Karnataka Identity Stripe at top of Header */
+.app-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(to right, var(--ka-yellow) 50%, var(--ka-red) 50%);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+/* Prominent & Noticeably Larger Karnataka State Emblem */
+.header-emblem-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header-brand-logo {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 2px solid var(--ka-gold);
+  background: #ffffff;
+  object-fit: cover;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s ease;
+}
+
+.header-brand-logo:hover {
+  transform: scale(1.05);
+}
+
+.header-title-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.header-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  line-height: 1.3;
+}
+
+.header-subtitle {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.demo-pill-badge {
+  background: var(--ka-yellow-light);
+  color: var(--ka-gold);
+  border: 1px solid var(--ka-yellow-border);
+  font-size: 10.5px;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.header-center {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.constituency-picker-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.constituency-dropdown {
+  background: var(--bg-subtle);
+  border: 1.5px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  padding: 7px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+  cursor: pointer;
+  outline: none;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.constituency-dropdown:hover {
+  border-color: var(--ka-red);
+  background: #ffffff;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Kannada / English Language Switcher */
+.language-switcher-group {
+  display: inline-flex;
+  background: var(--bg-subtle);
+  border: 1.5px solid var(--border-medium);
+  border-radius: var(--radius-full);
+  padding: 2px;
+}
+
+.lang-btn {
+  background: transparent;
+  border: none;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-muted);
+  padding: 5px 12px;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.lang-btn.active {
+  background: #ffffff;
+  color: var(--ka-red);
+  box-shadow: var(--shadow-sm);
+  font-weight: 800;
+}
+
+.header-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-subtle);
+  color: var(--text-secondary);
+}
+
+.header-chip.verified {
+  background: var(--status-green-bg);
+  border-color: var(--status-green-border);
+  color: var(--status-green);
+}
+
+.header-chip-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.header-chip-dot.pulsing {
+  animation: pulseDot 2s infinite ease-in-out;
+}
+
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+.btn-header-precautions {
+  background: var(--ka-yellow-light);
+  border: 1px solid var(--ka-yellow-border);
+  color: var(--ka-gold);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: inherit;
+}
+
+.btn-header-precautions:hover {
+  background: #fef08a;
+  border-color: #eab308;
+}
+
+/* ==========================================================================
+   Main App Workspace (Sidebar + Content View)
+   ========================================================================== */
+.app-workspace {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Left Navigation Rail (Desktop) */
+.app-sidebar {
+  width: var(--sidebar-width);
+  background: var(--bg-surface);
+  border-right: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex-shrink: 0;
+  padding: 18px 14px;
+  overflow-y: auto;
+}
+
+.sidebar-nav-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  list-style: none;
+}
+
+.sidebar-nav-item {
+  width: 100%;
+}
+
+.sidebar-nav-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 14px;
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  color: var(--text-secondary);
+  font-size: 13.5px;
+  font-weight: 700;
+  transition: all 0.15s ease;
+  border: 1.5px solid transparent;
+  cursor: pointer;
+}
+
+.sidebar-nav-link-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sidebar-nav-icon {
+  font-size: 16px;
+}
+
+.sidebar-nav-link:hover {
+  background: var(--bg-surface-hover);
+  color: var(--text-primary);
+}
+
+.sidebar-nav-link.active {
+  background: var(--ka-red-light);
+  color: var(--ka-red);
+  border-color: var(--ka-red-border);
+  font-weight: 800;
+}
+
+.nav-badge-count {
+  background: var(--bg-inset);
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: var(--radius-full);
+}
+
+.sidebar-nav-link.active .nav-badge-count {
+  background: var(--ka-red-border);
+  color: var(--ka-red);
+}
+
+/* Sidebar Footer Card */
+.sidebar-footer-card {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sidebar-footer-title {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--ka-red);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sidebar-footer-text {
+  font-size: 11.5px;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+.btn-sidebar-reset {
+  background: #ffffff;
+  border: 1px solid var(--border-medium);
+  color: var(--status-red);
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 7px 10px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: center;
+  font-family: inherit;
+}
+
+.btn-sidebar-reset:hover {
+  background: var(--status-red-bg);
+  border-color: var(--status-red-border);
+}
+
+/* Main Content Area */
+.app-content-area {
+  flex: 1;
+  background: var(--bg-subtle);
+  overflow-y: auto;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.view-container {
+  max-width: 1240px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 24px 32px 60px 32px;
+  display: none;
+}
+
+.view-container.active-view {
+  display: block;
+  animation: fadeIn 0.15s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================================================
+   Prominent Voting Window & Live Timer Panel
+   ========================================================================== */
+.voting-window-panel {
+  background: #ffffff;
+  border: 1.5px solid var(--border-medium);
+  border-radius: var(--radius-lg);
+  padding: 18px 24px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  position: relative;
+  overflow: hidden;
+}
+
+.voting-window-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 5px;
+  background: var(--status-green);
+}
+
+.voting-window-panel.state-upcoming::before {
+  background: var(--status-amber);
+}
+
+.voting-window-panel.state-closed::before {
+  background: var(--status-red);
+}
+
+.window-meta-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.window-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.window-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.window-state-badge {
+  font-size: 11px;
+  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.window-state-badge.open {
+  background: var(--status-green-bg);
+  color: var(--status-green);
+  border: 1px solid var(--status-green-border);
+}
+
+.window-state-badge.upcoming {
+  background: var(--status-amber-bg);
+  color: var(--status-amber);
+  border: 1px solid var(--status-amber-border);
+}
+
+.window-state-badge.closed {
+  background: var(--status-red-bg);
+  color: var(--status-red);
+  border: 1px solid var(--status-red-border);
+}
+
+.window-date-text {
+  font-size: 12.5px;
+  color: var(--text-secondary);
+}
+
+.window-sample-notice {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* Digital Countdown Display */
+.window-timer-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.timer-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.countdown-digits-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.digit-card {
+  background: var(--bg-inset);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  padding: 6px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 50px;
+}
+
+.digit-num {
+  font-size: 20px;
+  font-weight: 800;
+  font-family: 'Times New Roman', Times, serif;
+  color: var(--text-primary);
+  line-height: 1.1;
+}
+
+.digit-unit {
+  font-size: 9.5px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+.timer-separator {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+/* Quick developer state preview switcher */
+.dev-state-switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.btn-state-pill {
+  background: transparent;
+  border: 1px solid var(--border-medium);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-family: inherit;
+}
+
+.btn-state-pill:hover {
+  background: var(--bg-surface-hover);
+  border-color: var(--text-primary);
+}
+
+/* ==========================================================================
+   Hero Gandaberunda Overview Banner
+   ========================================================================== */
+.overview-hero-card {
+  background: #ffffff;
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+}
+
+.overview-hero-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(to right, var(--ka-yellow) 50%, var(--ka-red) 50%);
+}
+
+.hero-emblem-large {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  border: 3px solid var(--ka-gold);
+  background: #ffffff;
+  object-fit: cover;
+  box-shadow: var(--shadow-md);
+  flex-shrink: 0;
+}
+
+.hero-content-group {
+  flex: 1;
+}
+
+.hero-kannada-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+.hero-english-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+.hero-tagline-badge {
+  display: inline-block;
+  background: var(--ka-red-light);
+  color: var(--ka-red);
+  border: 1px solid var(--ka-red-border);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  margin-top: 8px;
+}
+
+/* ==========================================================================
+   Voting Precautions Panel (Bilingual 7-Points)
+   ========================================================================== */
+.precautions-card {
+  background: #ffffff;
+  border: 1.5px solid var(--ka-yellow-border);
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-sm);
+}
+
+.precautions-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.precautions-header-icon {
+  font-size: 22px;
+  color: var(--ka-gold);
+}
+
+.precautions-title-group h3 {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.precautions-title-group p {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.precautions-list-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.precaution-item-box {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  display: flex;
+  gap: 10px;
+}
+
+.precaution-num {
+  width: 22px;
+  height: 22px;
+  background: var(--ka-yellow);
+  color: #000000;
+  font-weight: 800;
+  font-size: 11px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.precaution-text-content h4 {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.precaution-text-content p {
+  font-size: 11.5px;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+/* ==========================================================================
+   Candidate Ballot Roster with Verified Symbol Artwork
+   ========================================================================== */
+.ballot-table {
+  width: 100%;
+  background: var(--bg-surface);
+  border: 1.5px solid var(--border-medium);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  border-collapse: collapse;
+}
+
+.ballot-table thead th {
+  background: var(--bg-subtle);
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 11.5px;
+  font-weight: 800;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid var(--border-medium);
+}
+
+.candidate-row {
+  border-bottom: 1px solid var(--border-subtle);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.candidate-row:hover {
+  background: var(--bg-surface-hover);
+}
+
+.candidate-row.selected-row {
+  background: #eff6ff !important;
+  border-left: 4px solid var(--civic-navy);
+}
+
+.candidate-row td {
+  padding: 14px 16px;
+  vertical-align: middle;
+}
+
+.ballot-serial-no {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--text-muted);
+  text-align: center;
+  width: 50px;
+}
+
+.candidate-name-cell {
+  min-width: 220px;
+}
+
+.candidate-primary-name {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+.candidate-sub-name {
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+.candidate-party-cell {
+  min-width: 200px;
+}
+
+.party-primary-label {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.party-category-badge {
+  display: inline-block;
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-inset);
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.party-category-badge.national {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.party-category-badge.state {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.party-category-badge.nota {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+/* Official Symbol Artwork Container */
+.candidate-symbol-cell {
+  width: 130px;
+  text-align: center;
+}
+
+.symbol-container {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.official-symbol-artwork {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 3px;
+  background: #ffffff;
+  box-shadow: var(--shadow-sm);
+}
+
+.symbol-caption-label {
+  font-size: 9.5px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-align: center;
+  max-width: 120px;
+  line-height: 1.25;
+}
+
+.candidate-radio-cell {
+  width: 70px;
+  text-align: center;
+}
+
+.ballot-radio-input {
+  width: 22px;
+  height: 22px;
+  accent-color: var(--ka-red);
+  cursor: pointer;
+}
+
+/* Sticky Review Action Bar */
+.ballot-action-bar {
+  position: sticky;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(8px);
+  border: 1.5px solid var(--border-medium);
+  border-radius: var(--radius-lg);
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 24px;
+  box-shadow: var(--shadow-lg);
+  z-index: 20;
+}
+
+.ballot-selection-summary {
+  display: flex;
+  flex-direction: column;
+}
+
+.ballot-selection-status {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ballot-selected-candidate-text {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--ka-red);
+}
+
+.btn-review-selection {
+  background: var(--ka-red);
+  color: #ffffff;
+  border: none;
+  font-size: 14.5px;
+  font-weight: 800;
+  padding: 11px 26px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: inherit;
+}
+
+.btn-review-selection:disabled {
+  background: var(--border-medium);
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
+
+.btn-review-selection:not(:disabled):hover {
+  background: #991b1b;
+  box-shadow: var(--shadow-md);
+}
+
+/* Responsive Grid Columns */
+.dashboard-grid-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.dashboard-grid-3col {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+/* Key Value Pairs in Cards */
+.stat-box {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-sm);
+}
+
+.stat-box-label {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-box-value {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-top: 4px;
+}
+
+.stat-box-sub {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* Card Styling */
+.civic-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: 22px;
+  margin-bottom: 24px;
+}
+
+.civic-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 12px;
+}
+
+.civic-card-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Notice Banner */
+.civic-notice-banner {
+  background: #ffffff;
+  border: 1px solid var(--border-subtle);
+  border-left: 5px solid var(--ka-red);
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  box-shadow: var(--shadow-sm);
+}
+
+.civic-notice-icon {
+  font-size: 20px;
+  color: var(--ka-red);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.civic-notice-content h4 {
+  font-size: 13.5px;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.civic-notice-content p {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* Voter Token Auth Input Box */
+.voter-auth-box {
+  background: var(--bg-surface);
+  border: 1.5px solid var(--border-medium);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-sm);
+}
+
+.voter-auth-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.voter-auth-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.voter-input-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.voter-token-input {
+  flex: 1;
+  min-width: 260px;
+  padding: 10px 14px;
+  font-size: 14px;
+  font-family: 'Times New Roman', Times, serif;
+  font-weight: 700;
+  border: 1.5px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  background: var(--bg-subtle);
+  color: var(--text-primary);
+}
+
+.voter-token-input:focus {
+  background: #ffffff;
+  border-color: var(--ka-red);
+}
+
+.btn-voter-verify {
+  padding: 10px 20px;
+  background: var(--ka-red);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: 800;
+  font-size: 13.5px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.btn-voter-verify:hover {
+  background: #991b1b;
+}
+
+.quick-tokens-wrapper {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.quick-tokens-label {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  font-weight: 700;
+}
+
+.quick-token-pill {
+  font-size: 11px;
+  font-family: 'Times New Roman', Times, serif;
+  background: var(--bg-inset);
+  color: var(--ka-red);
+  border: 1px solid var(--border-subtle);
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.quick-token-pill:hover {
+  background: var(--ka-red-light);
+  border-color: var(--ka-red-border);
+}
+
+.voter-status-feedback {
+  margin-top: 10px;
+  font-size: 12.5px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.voter-status-feedback.valid {
+  color: var(--status-green);
+}
+
+.voter-status-feedback.already-voted {
+  color: var(--status-red);
+}
+
+.voter-status-feedback.invalid {
+  color: var(--status-red);
+}
+
+/* Toolbar & Filters */
+.ballot-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.ballot-search-input {
+  padding: 9px 14px;
+  border: 1.5px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  font-size: 13.5px;
+  min-width: 280px;
+  background: #ffffff;
+  font-family: inherit;
+}
+
+.ballot-filter-tabs {
+  display: flex;
+  gap: 4px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  padding: 3px;
+  border-radius: var(--radius-md);
+}
+
+.ballot-filter-btn {
+  background: transparent;
+  border: none;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-muted);
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.ballot-filter-btn.active {
+  background: var(--ka-red-light);
+  color: var(--ka-red);
+}
+
+/* Receipt Styles */
+.receipt-wrapper {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.receipt-card {
+  background: #ffffff;
+  border: 2px solid var(--status-green-border);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  box-shadow: var(--shadow-md);
+  position: relative;
+}
+
+.receipt-stamp-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-bottom: 16px;
+  border-bottom: 1px dashed var(--border-medium);
+  margin-bottom: 20px;
+}
+
+.receipt-stamp-badge {
+  width: 48px;
+  height: 48px;
+  background: var(--status-green-bg);
+  border: 2px solid var(--status-green);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--status-green);
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.receipt-stamp-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.receipt-stamp-sub {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.receipt-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.receipt-field-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 9px 14px;
+  background: var(--bg-subtle);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+}
+
+.receipt-field-label {
+  font-size: 11.5px;
+  font-weight: 800;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.receipt-field-value {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-family: 'Times New Roman', Times, serif;
+  word-break: break-all;
+  text-align: right;
+  max-width: 420px;
+}
+
+.zero-knowledge-privacy-box {
+  background: #fffbeb;
+  border: 1px solid var(--ka-yellow-border);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  margin-bottom: 20px;
+  display: flex;
+  gap: 12px;
+}
+
+.zk-icon {
+  font-size: 22px;
+  color: var(--ka-gold);
+  flex-shrink: 0;
+}
+
+.zk-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: #92400e;
+  margin-bottom: 2px;
+}
+
+.zk-desc {
+  font-size: 11.5px;
+  color: #78350f;
+  line-height: 1.5;
+}
+
+/* Party Directory Cards */
+.party-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 16px;
+}
+
+.party-card {
+  background: #ffffff;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 18px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all 0.15s ease;
+}
+
+.party-card:hover {
+  border-color: var(--border-medium);
+  box-shadow: var(--shadow-md);
+}
+
+.party-card-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.party-card-logo {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 3px;
+  flex-shrink: 0;
+}
+
+.party-card-abbr {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.party-meta-list {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 11.5px;
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 10px;
+}
+
+.party-meta-row {
+  display: flex;
+  justify-content: space-between;
+  color: var(--text-muted);
+}
+
+.party-meta-row strong {
+  color: var(--text-secondary);
+}
+
+.party-contesting-chip {
+  margin-top: 10px;
+  padding: 5px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.party-contesting-chip.contesting {
+  background: var(--status-green-bg);
+  color: var(--status-green);
+  border: 1px solid var(--status-green-border);
+}
+
+.party-contesting-chip.not-contesting {
+  background: var(--bg-inset);
+  color: var(--text-muted);
+  border: 1px solid var(--border-subtle);
+}
+
+/* Ledger Explorer & Mining */
+.ledger-stats-banner {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.block-card {
+  background: #ffffff;
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 14px;
+}
+
+.block-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.block-height-tag {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--ka-red);
+  font-family: 'Times New Roman', Times, serif;
+  background: var(--ka-red-light);
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--ka-red-border);
+}
+
+.block-hash-line {
+  font-family: 'Times New Roman', Times, monospace;
+  font-size: 11px;
+  color: var(--text-secondary);
+  background: var(--bg-inset);
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  overflow-x: auto;
+  white-space: nowrap;
+  margin-bottom: 8px;
+}
+
+.btn-mine-block {
+  background: var(--status-green);
+  color: #ffffff;
+  border: none;
+  font-size: 13px;
+  font-weight: 800;
+  padding: 9px 20px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: inherit;
+}
+
+.btn-mine-block:hover {
+  background: #166534;
+}
+
+.btn-mine-block:disabled {
+  background: var(--border-medium);
+  cursor: not-allowed;
+}
+
+/* Modals */
+.civic-dialog {
+  border: 1.5px solid var(--border-medium);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  max-width: 560px;
+  width: 90%;
+  margin: auto;
+  box-shadow: var(--shadow-lg);
+  background: #ffffff;
+  color: var(--text-primary);
+  font-family: inherit;
+}
+
+.civic-dialog::backdrop {
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(3px);
+}
+
+.dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.dialog-title {
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.btn-dialog-close {
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: var(--text-muted);
+}
+
+.btn-primary {
+  background: var(--ka-red);
+  color: #ffffff;
+  border: none;
+  font-size: 13.5px;
+  font-weight: 800;
+  padding: 9px 20px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.btn-primary:hover {
+  background: #991b1b;
+}
+
+.btn-secondary {
+  background: var(--bg-surface);
+  border: 1.5px solid var(--border-medium);
+  color: var(--text-primary);
+  font-size: 13.5px;
+  font-weight: 700;
+  padding: 9px 18px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-family: inherit;
+}
+
+/* Results Progress Bars */
+.tally-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.tally-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12.5px;
+  font-weight: 700;
+}
+
+.tally-bar-track {
+  height: 10px;
+  background: var(--bg-inset);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+}
+
+.tally-bar-fill {
+  height: 100%;
+  background: var(--ka-red);
+  border-radius: var(--radius-full);
+  transition: width 0.4s ease;
+}
+
+/* Responsive Adaptations */
+@media (max-width: 1024px) {
+  :root {
+    --sidebar-width: 220px;
+  }
+  .dashboard-grid-2col, .precautions-list-grid {
+    grid-template-columns: 1fr;
+  }
+  .dashboard-grid-3col {
+    grid-template-columns: 1fr;
+  }
+  .ledger-stats-banner {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --header-height: auto;
+  }
+  .app-header {
+    padding: 8px 12px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .header-brand-logo {
+    width: 44px;
+    height: 44px;
+  }
+  .header-right {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .app-workspace {
+    flex-direction: column;
+  }
+  .app-sidebar {
+    width: 100%;
+    height: auto;
+    flex-direction: row;
+    padding: 6px 8px;
+    overflow-x: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .sidebar-nav-list {
+    flex-direction: row;
+    gap: 4px;
+    width: 100%;
+  }
+  .sidebar-nav-link {
+    padding: 6px 10px;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+  .sidebar-footer-card {
+    display: none;
+  }
+  .view-container {
+    padding: 16px 12px 60px 12px;
+  }
+  .overview-hero-card {
+    flex-direction: column;
+    text-align: center;
+    gap: 12px;
+  }
+  .voting-window-panel {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .window-timer-group {
+    align-items: flex-start;
+  }
+  .ballot-table thead {
+    display: none;
+  }
+  .ballot-table, .ballot-table tbody, .candidate-row, .candidate-row td {
+    display: block;
+    width: 100%;
+  }
+  .candidate-row {
+    margin-bottom: 12px;
+    border: 1.5px solid var(--border-medium);
+    border-radius: var(--radius-md);
+    padding: 10px;
+  }
+  .candidate-row td {
+    padding: 4px 6px;
+    text-align: left;
+  }
+  .ballot-serial-no {
+    text-align: left;
+    width: auto;
+  }
+  .candidate-radio-cell {
+    width: auto;
+    text-align: right;
+  }
+}

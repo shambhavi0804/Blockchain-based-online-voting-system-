@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Blockchain Voting System</title>
+</head>
+<body>
+    <h2>Vote Here</h2>
+    
+    <form action="/vote" method="post">
+        <label>Voter ID:</label><br>
+        <input type="text" name="voter" required><br><br>
+
+        <label>Select Candidate:</label><br>
+        <select name="candidate">
+            <option value="Alice">Alice</option>
+            <option value="Bob">Bob</option>
+        </select><br><br>
+
+        <button type="submit">Vote</button>
+    </form>
+
+    <br>
+    <a href="/mine">Mine Block</a><br><br>
+    <a href="/results">View Results</a><br><br>
+    <a href="/chain">View Blockchain</a>
+</body>
+</html>
